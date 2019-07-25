@@ -9,22 +9,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     server: Server;
     users: any[] = [];
 
-    private logger = new Logger('AppGateway');
+    private logger = new Logger('ChatGateway');
 
     async handleConnection(client) {
         this.logger.log('new clent connected');
-        client.emit('users', this.users);
+        client.emit('connect', 'connected.');
     }
 
     async handleDisconnect(client) {
         this.logger.log('client disconnected');
-        this.server.emit('users', this.users);
+        this.server.emit('disconnect', 'disconnected');
     }
 
     @SubscribeMessage('message')
     async onChat(client, message) {
         this.logger.log(message);
         client.broadcast.emit('message', message);
+    }
+
+    test(): Promise<any> {
+        return new Promise(resolve => {
+            this.server.emit('message', 'hello!!!!');
+            this.logger.log('emitting message: hello!!!!!');
+            resolve();
+        });
     }
 
 }

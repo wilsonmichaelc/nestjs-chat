@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+    var socket = io('http://localhost:4001/');
+    socket.on('connect', function (response) {
+        printMsg('connected');
+        socket.send('message', 'hi');
+        socket.on('disconnect', function () {
+            printMsg('disconnected');
+        });
+        socket.on('message', function (msg) {
+            printMsg(msg);
+        });
+    });
+
+    function printMsg(msg) {
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(msg));
+        document.getElementById('messages').appendChild(li);
+    }
+
+</script>
+
+</html>
